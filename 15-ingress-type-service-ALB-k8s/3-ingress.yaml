@@ -7,7 +7,7 @@ metadata:
 spec:
   ingressClassName: external-nginx
   rules:
-    - host: service-a.amathyam.com
+    - host: service-a.mathyam.com
       http:
         paths:
           - path: /
