@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx
+  namespace: efs-demo
+
+spec:
+  type: ClusterIP
+
+  selector:
+    app: nginx
+
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80
