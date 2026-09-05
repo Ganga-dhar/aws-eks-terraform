@@ -1,13 +1,13 @@
 ---
-kind: Service
 apiVersion: v1
+kind: Service
 metadata:
-  name: nginx
-  namespace: 7-example
+  name: myapp
+  namespace: 6-example
 spec:
   type: ClusterIP
   ports:
-    - name: web
-      port: 80
+    - port: 8080
+      targetPort: http
   selector:
-    app: nginx
+    app: myapp
