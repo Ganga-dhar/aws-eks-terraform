@@ -1,44 +1,44 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: myapp
-  namespace: 10-example
+  name: nginx
+  namespace: ebs-demo
 
 spec:
   serviceName: nginx
-  replicas: 1
+  replicas: 2
 
   selector:
     matchLabels:
-      app: myapp
+      app: nginx
 
   template:
     metadata:
       labels:
-        app: myapp
+        app: nginx
 
     spec:
       containers:
-        - name: myapp
-          image: mathyam/myapp-195:v2
+        - name: nginx
+          image: nginx:latest
 
           ports:
-            - name: http
-              containerPort: 8080
+            - containerPort: 80
 
           volumeMounts:
-            - name: data
-              mountPath: /data
+            - name: nginx-data
+              mountPath: /usr/share/nginx/html
 
   volumeClaimTemplates:
     - metadata:
-        name: data
+        name: nginx-data
 
       spec:
-        storageClassName: gp2
         accessModes:
           - ReadWriteOnce
 
+        storageClassName: ebs-sc
+
         resources:
           requests:
-            storage: 5Gi
+            storage: 10Gi
