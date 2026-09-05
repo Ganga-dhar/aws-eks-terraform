@@ -123,7 +123,6 @@ resource "aws_iam_role_policy_attachment" "efs_csi_driver" {
 
 
 
-
 resource "helm_release" "efs_csi_driver" {
   name       = "aws-efs-csi-driver"
   repository = "https://kubernetes-sigs.github.io/aws-efs-csi-driver/"
@@ -134,20 +133,20 @@ resource "helm_release" "efs_csi_driver" {
 
   version = "3.0.5"
 
-  set {
-    name  = "controller.serviceAccount.create"
-    value = "true"
-  }
-
-  set {
-    name  = "controller.serviceAccount.name"
-    value = "efs-csi-controller-sa"
-  }
-
-  set {
-    name  = "controller.serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
-    value = aws_iam_role.efs_csi_driver.arn
-  }
+  set = [
+    {
+      name  = "controller.serviceAccount.create"
+      value = "true"
+    },
+    {
+      name  = "controller.serviceAccount.name"
+      value = "efs-csi-controller-sa"
+    },
+    {
+      name  = "controller.serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
+      value = aws_iam_role.efs_csi_driver.arn
+    }
+  ]
 
   depends_on = [
     aws_iam_role_policy_attachment.efs_csi_driver,
