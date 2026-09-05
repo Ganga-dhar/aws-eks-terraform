@@ -16,14 +16,16 @@ resource "aws_efs_file_system" "eks" {
 resource "aws_security_group" "efs" {
   name        = "${aws_eks_cluster.eks.name}-efs-sg"
   description = "Security group for EKS EFS"
-  vpc_id      = aws_vpc.eks.id
+  vpc_id      = aws_eks_cluster.eks.vpc_config[0].vpc_id
 
   ingress {
     description     = "NFS from EKS nodes"
     protocol        = "tcp"
     from_port       = 2049
     to_port         = 2049
-    security_groups = [aws_security_group.eks_nodes.id]
+    security_groups = [
+  aws_eks_cluster.eks.vpc_config[0].cluster_security_group_id
+]
   }
 
   egress {
@@ -175,6 +177,34 @@ resource "kubernetes_namespace_v1" "efs_demo" {
     name = "efs-demo"
   }
 }
+
+
+resource "kubernetes_storage_class_v1" "efs" {
+  metadata {
+    name = "efs"
+  }
+
+  storage_provisioner = "efs.csi.aws.com"
+
+  reclaim_policy      = "Delete"
+  volume_binding_mode = "Immediate"
+
+  parameters = {
+    provisioningMode = "efs-ap"
+    fileSystemId     = aws_efs_file_system.eks.id
+    directoryPerms   = "700"
+  }
+
+  mount_options = [
+    "tls",
+    "iam"
+  ]
+
+  depends_on = [
+    helm_release.efs_csi_driver
+  ]
+}
+
 
 resource "kubernetes_persistent_volume_claim_v1" "efs" {
   metadata {
