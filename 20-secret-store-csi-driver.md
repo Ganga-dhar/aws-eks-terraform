@@ -1551,20 +1551,3 @@ kubectl exec -n 12-example <POD_NAME> -- \
           Mounted Secret       K8s Secret
           /mnt/secrets-store   myapp-k8s-secret
 ```
-
----
-
-## Key Takeaways
-
-* **AWS Secrets Manager** stores the actual secret.
-* **IRSA** provides AWS permissions to the Kubernetes ServiceAccount.
-* **IAM policy** provides least-privilege access to Secrets Manager.
-* **Secret Store CSI Driver** retrieves external secrets.
-* **AWS provider** connects the CSI driver to AWS Secrets Manager.
-* **SecretProviderClass** defines which secrets the Pod consumes.
-* Secrets can be mounted as **files**.
-* Secrets can optionally be synchronized into a **Kubernetes Secret**.
-* No static AWS access keys are required.
-* No Terraform Kubernetes provider is required.
-* Terraform manages AWS infrastructure and Helm.
-* `kubectl` manages Kubernetes application resources.
